@@ -120,8 +120,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 # 静态资源的路由
 STATIC_URL = "/static/"
@@ -193,3 +191,6 @@ LOGGING = {
         },
     }
 }
+
+# 替换系统的User来使用自定义用户模型类
+AUTH_USER_MODEL = 'users.User'
