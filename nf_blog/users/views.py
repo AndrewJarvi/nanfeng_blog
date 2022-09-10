@@ -1,9 +1,14 @@
 from django.shortcuts import render
-
+from django.shortcuts import redirect
+from django.urls import reverse
 # Create your views here.
 
 from django.views import View
 
+from django.http.response import HttpResponseBadRequest
+import re
+from users.models import User
+from django.db import DatabaseError
 
 # 注册视图定义
 class RegisterView(View):
@@ -12,6 +17,59 @@ class RegisterView(View):
     def get(self, request):
 
         return render(request, 'register.html')
+
+    def post(self, request):
+        """
+        1.接收数据
+        2.验证数据
+            2.1 参数是否齐全
+            2.2 手机号格式是否正确
+            2.3 密码是否符合格式
+            2.4 密码和确认密码是否一致
+            2.5 短信验证码是否和redis中的一致
+        3.保存注册信息
+        4.返回响应跳转到指定页面
+        :param request:
+        :return:
+        """
+        # 1.接收数据
+        mobile = request.POST.get('mobile')
+        password = request.POST.get('password')
+        password2 = request.POST.get('password2')
+        sms_code = request.POST.get('sms_code')
+        # 2.验证数据
+        if not all ([mobile, password, password2, sms_code]):
+            return HttpResponseBadRequest('缺少必要的参数')
+        #     2.1 参数是否齐全
+        if not re.match(r'^1[3-9]\d{9}$', mobile):
+            return HttpResponseBadRequest('手机号不符合规则')
+        #     2.2 手机号格式是否正确
+        if not re.match(r'^[0-9A-Za-z]{8,20}$', password):
+            return HttpResponseBadRequest('请输入8-20位只由数字和字母组成的密码')
+        #     2.3 密码是否符合格式
+        if password != password2:
+            return HttpResponseBadRequest('两次密码不一致')
+        #     2.4 密码和确认密码是否一致
+        redis_conn = get_redis_connection('default')
+        redis_sms_code = redis_conn.get('sms:%s' % mobile)
+        if redis_sms_code is None:
+            return HttpResponseBadRequest('短信验证码已过期')
+        #     2.5 短信验证码是否和redis中的一致
+        if sms_code != redis_sms_code.decode():
+            return HttpResponseBadRequest('短信验证码不一致')
+        # 3.保存注册信息 (同样因为是操作数据库需要做异常捕获)
+        try:
+            user = User.objects.create_user(
+                username=mobile,
+                mobile=mobile,
+                password=password,
+            )
+        except DatabaseError as e:
+            logger.error(e)
+            return HttpResponseBadRequest('注册失败')
+        # 4.返回响应跳转到指定页面 redirect进行重定向 reverse通过命名空间获取视图所对应的路由
+        return redirect(reverse('home:index'))
+
 
 from django.http import HttpResponseBadRequest, HttpResponse
 from libs.captcha.captcha import captcha
