@@ -82,7 +82,7 @@ DATABASES = {
         'PORT': 3306, # 数据库端口
         'USER': 'nanfeng', # 数据库用户名
         'PASSWORD': 'beihai', # 数据库用户密码
-        'NAME': 'nf_blog' # 数据库名字
+        'NAME': 'nf_blog', # 数据库名字
     },
 }
 
@@ -194,3 +194,12 @@ LOGGING = {
 
 # 替换系统的User来使用自定义用户模型类
 AUTH_USER_MODEL = 'users.User'
+
+# 修改系统默认跳转链接
+LOGIN_URL = '/login/'
+
+# 设置上传的图片保存到media目录下
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+# 设置图片访问的统一路由
+MEDIA_URL = '/media/'

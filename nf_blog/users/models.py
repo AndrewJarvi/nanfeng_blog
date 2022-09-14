@@ -16,6 +16,8 @@ class User(AbstractUser):
     # 个人简介
     user_desc = models.CharField(max_length=500, blank=True)
 
+    # 修改认证的字段为手机号
+    USERNAME_FIELD = 'mobile'
     # 内部类 class Meta 用于给 model 定义元数据
     class Meta:
         db_table = 'tb_users'  # 修改默认的表名
