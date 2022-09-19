@@ -3,7 +3,7 @@ from django.urls import path
 from users.views import RegisterView, ImageCodeView
 from users.views import SmsCodeView, LoginView
 from users.views import LogoutView, ForgetPasswordView
-from users.views import UserCenterView
+from users.views import UserCenterView,WriteBlogView
 
 urlpatterns = [
     # path的第一个参数： 路由
@@ -26,7 +26,10 @@ urlpatterns = [
     path('forget_password/', ForgetPasswordView.as_view(), name='forgetpassword'),
 
     # 用户中心路由
-    path('center/', UserCenterView.as_view(), name='center')
+    path('center/', UserCenterView.as_view(), name='center'),
+
+    # 写博客路由
+    path('writeblog/', WriteBlogView.as_view(), name='writeblog'),
 ]
 
 
