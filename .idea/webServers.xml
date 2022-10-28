@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="57c3e77a-a49b-412c-819e-dfba410ef3c3" name="cloud_nanfeng">
+        <fileTransfer accessType="SFTP" host="119.91.216.149" port="22" sshConfigId="f02c599e-3552-49b7-b5de-e464b189a5f9" sshConfig="root@119.91.216.149:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
